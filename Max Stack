@@ -1,0 +1,60 @@
+import heapq
+
+class MaxStack:
+    def __init__(self):
+       
+        self.heap = []
+        self.stack = []
+        
+        self.count = 0
+        
+        self.remove = set()
+
+    def push(self, x: int) -> None:
+        heapq.heappush(self.heap, (-x, -self.count))
+        self.stack.append((x, self.count))
+        self.count += 1
+
+    def _cleanup_stack(self):
+        """Helper to remove 'ghost' elements from the top of the stack."""
+        while self.stack and self.stack[-1][1] in self.remove:
+            self.stack.pop()
+
+    def _cleanup_heap(self):
+        """Helper to remove 'ghost' elements from the top of the heap."""
+        while self.heap and -self.heap[0][1] in self.remove:
+            heapq.heappop(self.heap)
+
+    def pop(self) -> int:
+        self._cleanup_stack()
+        num, index = self.stack.pop()
+        self.remove.add(index)
+        return num
+
+    def top(self) -> int:
+        self._cleanup_stack()
+        return self.stack[-1][0]
+
+    def peekMax(self) -> int:
+        self._cleanup_heap()
+        return -self.heap[0][0]
+
+    def popMax(self) -> int:
+        self._cleanup_heap()
+        num, neg_index = heapq.heappop(self.heap)
+        self.remove.add(-neg_index)
+        return -num
+
+# --- Driver Code for Testing ---
+if __name__ == "__main__":
+    stk = MaxStack()
+    stk.push(5)
+    stk.push(1)
+    stk.push(5)
+    
+    print(f"Top: {stk.top()}")          # Expected: 5
+    print(f"PopMax: {stk.popMax()}")    # Expected: 5 (the top-most one)
+    print(f"Top: {stk.top()}")          # Expected: 1
+    print(f"PeekMax: {stk.peekMax()}")  # Expected: 5 (the remaining one)
+    print(f"Pop: {stk.pop()}")          # Expected: 1
+    print(f"Top: {stk.top()}")          # Expected: 5
