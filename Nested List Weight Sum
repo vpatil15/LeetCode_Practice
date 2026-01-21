@@ -1,0 +1,49 @@
+# DFS Solution
+class Solution:
+    def depthSum(self, nestedList: List[NestedInteger]) -> int:
+        # create a DFS Function
+        # declare total initially as 0
+        # loop through a current list
+        # if a current elemt is integer, then calculate total
+        # else call dfs 
+        
+        def dfs(current , depth):
+            total = 0
+            for i in current:
+                if i.isInteger():
+                    total += i.getInteger() * depth
+                else:
+                    total += dfs(i.getList(), depth + 1)
+            return total
+        return dfs(nestedList, 1)
+
+
+#-------------------------------#
+
+#BFS Solution
+
+class Solution:
+    def depthSum(self, nestedList: List[NestedInteger]) -> int:
+        # create a deque
+        # declare depth initially as 1 and later increase it.
+        # declare res to return
+        # RUn a while loop unless que is empty
+        # run a for loop over que
+        # Take current and check if it is isInteger and if yes perform res operation
+        # else extend it to que
+        # increase depth out side for loop and return res
+
+        que = collections.deque(nestedList)
+        depth = 1
+        result = 0
+
+        while que:
+            for _ in range(len(que)):
+                current = que.popleft()
+                if current.isInteger():
+                    result += current.getInteger() * depth
+                else:
+                    que.extend(current.getList())
+            depth += 1
+        return result
+        
