@@ -1,0 +1,20 @@
+class Solution:
+    def isConvex(self, points: List[List[int]]) -> bool:
+        prev = 0
+        n = len(points)
+        for i in range(n):
+            p1 = points[i]
+            p2 = points[(i+1)%n]
+            p3 = points[(i+2)%n]
+            x1 = p2[0] - p1[0]
+            y1 = p2[1] - p1[1]
+
+            x2 = p3[0] - p2[0]
+            y2 = p3[1] - p2[1]
+
+            cross = x1 * y2 - x2 * y1
+            if cross != 0:
+                if prev != 0 and cross * prev < 0:
+                    return False
+                prev = cross
+        return True
